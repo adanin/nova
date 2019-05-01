@@ -88,12 +88,18 @@ def blockdev_flush(path):
 
 
 @nova.privsep.sys_admin_pctxt.entrypoint
-def clear(path, volume_size, shred=False):
-    cmd = ['shred']
-    if shred:
-        cmd.extend(['-n3'])
+def clear(path, volume_size, shred=False, ionice_level=None):
+    if ionice_level:
+        if ionice_level == 'idle':
+            cmd = ['ionice', '-c', '3']
+        else:
+            cmd = ['ionice', '-c', '2', '-n', ionice_level]
     else:
-        cmd.extend(['-n0', '-z'])
+        cmd = []
+    if shred:
+        cmd.extend(['shred', '-n3'])
+    else:
+        cmd.extend(['shred', '-n0', '-z'])
     cmd.extend(['-s%d' % volume_size, path])
     processutils.execute(*cmd)
 

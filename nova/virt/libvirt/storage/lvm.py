@@ -174,8 +174,14 @@ def clear_volume(path):
     if volume_clear_size != 0 and volume_clear_size < volume_size:
         volume_size = volume_clear_size
 
+    if CONF.libvirt.volume_clear_ionice_level != 'none':
+        ionice_level = CONF.libvirt.volume_clear_ionice_level
+    else:
+        ionice_level = None
+
     nova.privsep.fs.clear(path, volume_size,
-                          shred=(CONF.libvirt.volume_clear == 'shred'))
+                          shred=(CONF.libvirt.volume_clear == 'shred'),
+                          ionice_level=ionice_level)
 
 
 def remove_volumes(paths):

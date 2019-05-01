@@ -819,6 +819,29 @@ Related options:
 * volume_clear - must be set and the value must be different than ``none``
   for this option to have any impact
 """),
+    cfg.StrOpt('volume_clear_ionice_level',
+               default='idle',
+               choices=('none', 'idle', '0', '1', '2', '3', '4', '5', '6', '7'),
+               help="""
+What I/O schedule class and priority level should be used when clearing
+a volume. Only takes effect if ``volume_clear`` option is set to ``zero`` or
+``shred``. For more info about classes and priorities, check ``man ionice``.
+
+Possible values:
+
+* none - do not set I/O scheduling class explicitly. Usually, it's the most
+  aggressive option in terms of system performance impact
+* idle - use the Idle scheduling class. This option impacts system performance
+  the least with a downside of increased time for volume clearance.
+* from 0 to 7 - use the Best-effort scheduling class and set the priority level
+  to the specified number
+
+Related options:
+
+* images_type - must be set to ``lvm``
+* volume_clear - must be set and the value must be different than ``none``
+  for this option to have any impact
+"""),
 ]
 
 libvirt_utils_opts = [
